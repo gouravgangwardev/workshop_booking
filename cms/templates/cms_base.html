@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FOSSEE Workshop Booking — IIT Bombay">
+  <title>{{ page.title|title }}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/png" href="{% static 'workshop_app/img/fossee_logo.png' %}">
+
+  <link rel="stylesheet" href="{% static 'cms/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'workshop_app/css/base.css' %}">
+  {{ page.imports|safe }}
+</head>
+<body>
+
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top"
+     role="navigation" aria-label="Main navigation">
+  <a class="navbar-brand" href="/">FOSSEE Workshops</a>
+
+  <button class="navbar-toggler" type="button"
+          data-toggle="collapse" data-target="#cmsNav"
+          aria-controls="cmsNav" aria-expanded="false"
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="cmsNav">
+    <ul class="navbar-nav ml-auto">
+      {% for nav in navs %}
+      <li class="nav-item{% if nav.subnavs %} dropdown{% endif %}">
+        {% if nav.subnavs %}
+        <a class="nav-link dropdown-toggle text-white" href="#"
+           id="dropdown-{{ forloop.counter }}" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ nav.name }}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdown-{{ forloop.counter }}">
+          {% for subnav in nav.subnavs %}
+          <a class="dropdown-item" href="{{ subnav.link }}">{{ subnav.name }}</a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <a class="nav-link text-white" href="{{ nav.link }}">{{ nav.name }}</a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</nav>
+
+<div class="base-content">
+  {{ page.content|safe }}
+</div>
+
+<footer class="footer" role="contentinfo">
+  <div class="page-container">
+    Developed by <a href="https://fossee.in" style="color:#9ca3af;text-decoration:underline">FOSSEE Group</a>, IIT Bombay
+  </div>
+</footer>
+
+<script src="{% static 'cms/js/jquery-3.4.1.slim.min.js' %}"></script>
+<script src="{% static 'cms/js/popper.min.js' %}"></script>
+<script src="{% static 'cms/js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>
