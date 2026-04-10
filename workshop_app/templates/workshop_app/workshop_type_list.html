@@ -1,0 +1,113 @@
+{% extends 'workshop_app/base.html' %}
+{% load custom_filters %}
+
+{% block title %}Workshop Types — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px">
+
+  <!-- Page header -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+    <div>
+      <h1 class="page-heading">Workshop Types</h1>
+      <p class="page-subheading" style="margin:0">
+        Choose a workshop to learn more or propose a date at your institute.
+      </p>
+    </div>
+    {% if request.user|has_group:"instructor" %}
+    <a href="{% url 'workshop_app:add_workshop_type' %}" class="btn btn-primary">
+      <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Type
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Card grid -->
+  {% if workshop_type %}
+  <div class="workshop-card-grid">
+    {% for w in workshop_type %}
+    <div class="workshop-card">
+      <div class="workshop-card-body">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="workshop-card-icon" aria-hidden="true">
+            <i class="fa fa-graduation-cap"></i>
+          </div>
+          <h2 class="workshop-card-title">{{ w.name }}</h2>
+        </div>
+        <p class="workshop-card-desc">
+          {{ w.description|truncatewords:20 }}
+        </p>
+        <div class="workshop-card-footer">
+          <span class="workshop-card-meta">
+            <i class="fa fa-clock-o" aria-hidden="true"></i>
+            {{ w.duration }} day{{ w.duration|pluralize }}
+          </span>
+          <a href="{% url 'workshop_app:workshop_type_details' w.id %}"
+             class="btn btn-primary btn-sm"
+             aria-label="View details for {{ w.name }}">
+            View details
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if workshop_type.has_other_pages %}
+  <nav aria-label="Workshop types pages" style="margin-top:32px">
+    <ul class="pagination justify-content-center">
+      {% if workshop_type.has_previous %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ workshop_type.previous_page_number }}"
+           aria-label="Previous page">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled" aria-hidden="true">
+        <span class="page-link"><i class="fa fa-chevron-left"></i></span>
+      </li>
+      {% endif %}
+
+      {% for num in workshop_type.paginator.page_range %}
+        {% if workshop_type.number == num %}
+          <li class="page-item active" aria-current="page">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% elif num > workshop_type.number|add:"-4" and num < workshop_type.number|add:"4" %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}" aria-label="Page {{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if workshop_type.has_next %}
+      <li class="page-item">
+        <a class="page-link"
+           href="?page={{ workshop_type.next_page_number }}"
+           aria-label="Next page">
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled" aria-hidden="true">
+        <span class="page-link"><i class="fa fa-chevron-right"></i></span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon" aria-hidden="true">
+      <i class="fa fa-folder-open-o"></i>
+    </div>
+    <h3>No workshop types yet</h3>
+    <p>Workshop types will appear here once an instructor adds them.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

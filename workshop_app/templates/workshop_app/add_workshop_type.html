@@ -1,0 +1,73 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Add Workshop Type — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width:640px;padding-top:28px;padding-bottom:48px">
+
+  <a href="{% url 'workshop_app:workshop_type_list' %}" class="btn btn-secondary btn-sm" style="margin-bottom:20px">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back to types
+  </a>
+
+  <h1 class="page-heading">New Workshop Type</h1>
+  <p class="page-subheading">Fill in the details for the new workshop type.</p>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="{{ form.name.id_for_label }}" class="form-label">
+            Workshop name <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          {{ form.name }}
+          {% for error in form.name.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.duration.id_for_label }}" class="form-label">
+            Duration (days) <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          {{ form.duration }}
+          {% if form.duration.help_text %}
+            <div class="form-text">{{ form.duration.help_text }}</div>
+          {% endif %}
+          {% for error in form.duration.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}" class="form-label">
+            Description <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          {{ form.description }}
+          {% for error in form.description.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.terms_and_conditions.id_for_label }}" class="form-label">
+            Terms and conditions <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          {{ form.terms_and_conditions }}
+          {% for error in form.terms_and_conditions.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div style="text-align:right;margin-top:8px">
+          <button type="submit" class="btn btn-primary" data-loading-text="Creating…">
+            <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

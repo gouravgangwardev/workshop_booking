@@ -1,0 +1,18 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Signed out — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width:440px;padding-top:64px;padding-bottom:64px;text-align:center">
+
+  <div class="empty-state-icon" aria-hidden="true">
+    <i class="fa fa-sign-out" style="color:var(--primary)"></i>
+  </div>
+  <h1 class="page-heading">You've been signed out</h1>
+  <p style="color:var(--text-secondary);margin-bottom:24px">
+    Thanks for using FOSSEE Workshops.
+  </p>
+  <a href="{% url 'workshop_app:login' %}" class="btn btn-primary btn-lg">Sign in again</a>
+
+</div>
+{% endblock %}

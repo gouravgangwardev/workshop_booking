@@ -1,0 +1,153 @@
+{% extends "workshop_app/base.html" %}
+
+{% block title %}My Workshops — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px">
+
+  <!-- Page header -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+    <div>
+      <h1 class="page-heading">My Workshops</h1>
+      <p class="page-subheading" style="margin:0">Track the status of workshops you have proposed.</p>
+    </div>
+    <a href="{% url 'workshop_app:propose_workshop' %}" class="btn btn-primary">
+      <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Propose Workshop
+    </a>
+  </div>
+
+  {% if not workshops %}
+  <!-- Empty state -->
+  <div class="empty-state">
+    <div class="empty-state-icon" aria-hidden="true">
+      <i class="fa fa-calendar-o"></i>
+    </div>
+    <h3>No workshops yet, {{ user.first_name }}</h3>
+    <p>Propose your first workshop — choose a type and date that suits your institution.</p>
+    <a href="{% url 'workshop_app:propose_workshop' %}" class="btn btn-primary btn-lg">
+      <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Propose a Workshop
+    </a>
+  </div>
+
+  {% else %}
+
+  <!-- ── Accepted ── -->
+  <div class="section-title">Accepted workshops</div>
+
+  {% with accepted=workshops|dictsortreversed:"date" %}
+  {% for workshop in workshops %}{% if workshop.status == 1 %}{% with found=1 %}{% endwith %}{% endif %}{% endfor %}
+  {% endwith %}
+
+  <!-- Mobile cards (hidden on md+) -->
+  <div class="d-md-none" id="acceptedCardsMobile">
+    {% for workshop in workshops %}
+      {% if workshop.status == 1 %}
+      <div class="status-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="status-card-title">
+              <a href="{% url 'workshop_app:workshop_details' workshop.id %}">
+                {{ workshop.workshop_type|capfirst }}
+              </a>
+            </div>
+            <div class="status-card-sub">{{ workshop.instructor.get_full_name }}</div>
+          </div>
+          <span class="badge badge-success">{{ workshop.get_status }}</span>
+        </div>
+        <div class="status-card-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+          {{ workshop.date|date:"D, d M Y" }}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Desktop table (hidden below md) -->
+  <div class="d-none d-md-block table-wrapper" style="margin-bottom:32px">
+    <table class="table table-hover" aria-label="Accepted workshops">
+      <thead>
+        <tr>
+          <th scope="col">Workshop</th>
+          <th scope="col">Instructor</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for workshop in workshops %}
+          {% if workshop.status == 1 %}
+          <tr>
+            <td>
+              <a href="{% url 'workshop_app:workshop_details' workshop.id %}">
+                {{ workshop.workshop_type|capfirst }}
+              </a>
+            </td>
+            <td>{{ workshop.instructor.get_full_name }}</td>
+            <td>{{ workshop.date|date:"d M Y" }}</td>
+            <td><span class="badge badge-success">{{ workshop.get_status }}</span></td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Pending ── -->
+  <div class="section-title">Pending proposals</div>
+
+  <!-- Mobile cards -->
+  <div class="d-md-none">
+    {% for workshop in workshops %}
+      {% if workshop.status == 0 and workshop.tnc_accepted %}
+      <div class="status-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="status-card-title">
+              <a href="{% url 'workshop_app:workshop_details' workshop.id %}">
+                {{ workshop.workshop_type|capfirst }}
+              </a>
+            </div>
+          </div>
+          <span class="badge badge-warning">{{ workshop.get_status }}</span>
+        </div>
+        <div class="status-card-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+          {{ workshop.date|date:"D, d M Y" }}
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Desktop table -->
+  <div class="d-none d-md-block table-wrapper">
+    <table class="table table-hover" aria-label="Pending workshops">
+      <thead>
+        <tr>
+          <th scope="col">Workshop</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for workshop in workshops %}
+          {% if workshop.status == 0 and workshop.tnc_accepted %}
+          <tr>
+            <td>
+              <a href="{% url 'workshop_app:workshop_details' workshop.id %}">
+                {{ workshop.workshop_type|capfirst }}
+              </a>
+            </td>
+            <td>{{ workshop.date|date:"d M Y" }}</td>
+            <td><span class="badge badge-warning">{{ workshop.get_status }}</span></td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% endif %}
+</div>
+{% endblock %}

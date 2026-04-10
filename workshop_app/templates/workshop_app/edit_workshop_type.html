@@ -1,0 +1,114 @@
+{% extends 'workshop_app/base.html' %}
+{% load static %}
+
+{% block title %}Edit Workshop Type — FOSSEE{% endblock %}
+
+{% block extra-dependencies %}
+<script src="{% static 'workshop_app/js/jquery.formset.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width:680px;padding-top:28px;padding-bottom:48px">
+
+  <a href="{% url 'workshop_app:workshop_type_list' %}" class="btn btn-secondary btn-sm" style="margin-bottom:20px">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back to types
+  </a>
+
+  <h1 class="page-heading">Edit Workshop Type</h1>
+  <p class="page-subheading">Update the details and attachments for this workshop type.</p>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">Workshop details</div>
+      <div class="card-body">
+
+        <div class="form-group">
+          <label for="{{ form.name.id_for_label }}" class="form-label">Workshop name</label>
+          {{ form.name }}
+          {% for error in form.name.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.duration.id_for_label }}" class="form-label">Duration (days)</label>
+          {{ form.duration }}
+          {% if form.duration.help_text %}
+            <div class="form-text">{{ form.duration.help_text }}</div>
+          {% endif %}
+          {% for error in form.duration.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+          {{ form.description }}
+          {% for error in form.description.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.terms_and_conditions.id_for_label }}" class="form-label">Terms and conditions</label>
+          {{ form.terms_and_conditions }}
+          {% for error in form.terms_and_conditions.errors %}
+            <div class="invalid-feedback" role="alert">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">Attachments</div>
+      <div class="card-body">
+        {{ form_file.management_form }}
+        {{ form_file.non_form_errors }}
+
+        {% for subform in form_file %}
+        <div class="inline {{ form_file.prefix }}"
+             style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1">
+            {% for field in subform %}
+              {{ field }}
+            {% endfor %}
+          </div>
+          {% if subform.id.value %}
+          <div>
+            <a href="{% url 'workshop_app:delete_attachment_file' subform.id.value %}"
+               class="btn btn-danger btn-sm"
+               aria-label="Delete attachment">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </a>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div style="text-align:right">
+      <button type="submit" class="btn btn-primary" data-loading-text="Saving…">
+        <i class="fa fa-save" aria-hidden="true"></i>&nbsp; Save
+      </button>
+    </div>
+  </form>
+
+</div>
+
+<script>
+$(function () {
+  $(".inline.{{ form_file.prefix }}").formset({
+    prefix: "{{ form_file.prefix }}",
+    addCssClass: "btn btn-secondary btn-sm inline-form-add",
+    deleteCssClass: "hidden",
+    addText: '<i class="fa fa-plus"></i>&nbsp;Add attachment',
+    deleteText: '',
+    formCssClass: 'inline-form'
+  });
+});
+</script>
+{% endblock %}

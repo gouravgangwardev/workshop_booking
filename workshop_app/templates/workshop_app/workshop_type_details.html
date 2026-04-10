@@ -1,0 +1,48 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}{{ workshop_type.name }} — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width:720px;padding-top:32px;padding-bottom:48px">
+
+  <a href="{% url 'workshop_app:workshop_type_list' %}"
+     class="btn btn-secondary btn-sm"
+     style="margin-bottom:20px">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; All workshop types
+  </a>
+
+  <div class="card">
+    <div class="card-header" style="display:flex;align-items:center;gap:12px">
+      <div class="workshop-card-icon" style="flex-shrink:0" aria-hidden="true">
+        <i class="fa fa-graduation-cap"></i>
+      </div>
+      <div>
+        <h1 style="font-size:18px;font-weight:700;margin:0">{{ workshop_type.name }}</h1>
+        <p style="font-size:13px;color:var(--text-muted);margin:2px 0 0">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          {{ workshop_type.duration }} day{{ workshop_type.duration|pluralize }} duration
+        </p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <dl class="profile-info">
+        <dt>Description</dt>
+        <dd style="white-space:pre-wrap">{{ workshop_type.description }}</dd>
+
+        <dt>Terms and conditions</dt>
+        <dd style="white-space:pre-wrap">{{ workshop_type.terms_and_conditions }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  {% if not request.user|has_group:"instructor" %}
+  <div style="margin-top:20px;text-align:right">
+    <a href="{% url 'workshop_app:propose_workshop' %}" class="btn btn-primary">
+      <i class="fa fa-calendar-plus-o" aria-hidden="true"></i>&nbsp; Propose this workshop
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
