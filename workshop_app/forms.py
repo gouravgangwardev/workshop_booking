@@ -1,15 +1,10 @@
-from string import punctuation, digits
+from string import punctuation, digits, ascii_letters as letters
 
 from django import forms
 from django.utils import timezone
 
 from .models import (Profile, Workshop, Comment, department_choices, title, source, states, WorkshopType,
                      AttachmentFile)
-
-try:
-    from string import letters
-except ImportError:
-    from string import ascii_letters as letters
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -241,7 +236,6 @@ class WorkshopForm(forms.ModelForm):
         model = Workshop
         exclude = ['status', 'instructor', 'coordinator']
         widgets = {
-            # Native date input — works on mobile without jQuery UI
             'date': forms.DateInput(
                 attrs={
                     'type': 'date',
