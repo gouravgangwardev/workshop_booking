@@ -1,0 +1,236 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Workshop Statistics — FOSSEE{% endblock %}
+
+{% block extra-styles %}
+<style>
+.stats-filter-card .form-label {
+  font-size:12px;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-bottom:4px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px;padding-bottom:48px">
+
+  <div style="margin-bottom:24px">
+    <h1 class="page-heading">Workshop Statistics</h1>
+    <p class="page-subheading" style="margin:0">Browse and filter completed workshops across India.</p>
+  </div>
+
+  <div class="row">
+
+    <!-- Filter sidebar -->
+    <div class="col-12 col-md-3" style="margin-bottom:20px">
+      <form method="GET" novalidate>
+        <div class="card stats-filter-card">
+          <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Filters</span>
+            <a href="{% url 'statistics_app:public' %}"
+               class="btn btn-outline-secondary btn-sm"
+               aria-label="Clear all filters">
+              <i class="fa fa-times" aria-hidden="true"></i>&nbsp;Clear
+            </a>
+          </div>
+          <div class="card-body" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+
+            <div>
+              <label class="form-label" for="id_from_date">From date</label>
+              {{ form.from_date }}
+            </div>
+            <div>
+              <label class="form-label" for="id_to_date">To date</label>
+              {{ form.to_date }}
+            </div>
+            <div>
+              <label class="form-label" for="id_workshop_type">Workshop</label>
+              {{ form.workshop_type }}
+            </div>
+            <div>
+              <label class="form-label" for="id_state">State</label>
+              {{ form.state }}
+            </div>
+            <div>
+              <label class="form-label" for="id_sort">{{ form.sort.help_text }}</label>
+              {{ form.sort }}
+            </div>
+            {% if request.user.is_authenticated %}
+            <div>
+              <label class="form-label" for="id_show_workshops">{{ form.show_workshops.help_text }}</label>
+              {{ form.show_workshops }}
+            </div>
+            {% endif %}
+
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button type="submit" class="btn btn-primary btn-sm" style="flex:1"
+                      data-loading-text="Loading…">
+                <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View
+              </button>
+              <button type="submit" name="download" value="download"
+                      class="btn btn-secondary btn-sm" style="flex:1"
+                      data-loading-text="Exporting…">
+                <i class="fa fa-download" aria-hidden="true"></i>&nbsp;Export
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-12 col-md-9">
+
+      <!-- Controls row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div>
+          {% include "statistics_app/paginator.html" %}
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm" id="state_graph_btn"
+                  aria-label="Show state-wise chart">
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;State chart
+          </button>
+          <button class="btn btn-secondary btn-sm" id="type_graph_btn"
+                  aria-label="Show workshop-type chart">
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>&nbsp;Type chart
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop table -->
+      <div class="table-wrapper d-none d-md-block">
+        <table class="table table-hover" aria-label="Workshop list">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Coordinator</th>
+              <th scope="col">Institute</th>
+              <th scope="col">Instructor</th>
+              <th scope="col">Workshop</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for workshop in objects %}
+            <tr>
+              <td>{{ forloop.counter0|add:objects.start_index }}</td>
+              <td>{{ workshop.coordinator.get_full_name|capfirst }}</td>
+              <td>{{ workshop.coordinator.profile.institute|capfirst }}</td>
+              <td>{{ workshop.instructor.get_full_name|capfirst }}</td>
+              <td>{{ workshop.workshop_type.name }}</td>
+              <td>{{ workshop.date|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px">
+                No workshops found for the selected filters.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile cards -->
+      <div class="d-md-none">
+        {% for workshop in objects %}
+        <div class="status-card">
+          <div class="status-card-title">{{ workshop.workshop_type.name }}</div>
+          <div class="status-card-sub">
+            {{ workshop.coordinator.get_full_name|capfirst }}
+            &bull; {{ workshop.coordinator.profile.institute|capfirst }}
+          </div>
+          <div class="status-card-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+            {{ workshop.date|date:"d M Y" }}
+            {% if workshop.instructor %}
+            &bull; {{ workshop.instructor.get_full_name|capfirst }}
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+          <div class="empty-state-icon" aria-hidden="true"><i class="fa fa-search"></i></div>
+          <h3>No results</h3>
+          <p>Try adjusting your filters.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% include "statistics_app/paginator.html" %}
+    </div>
+
+  </div>
+</div>
+
+<!-- Chart Modal (Bootstrap — works on mobile) -->
+<div class="modal fade" id="chartModal" tabindex="-1" role="dialog"
+     aria-labelledby="chartModalTitle" aria-modal="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chartModalTitle">Workshop Statistics</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <canvas id="statsChart" style="max-height:380px"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra-dependencies %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+{% endblock %}
+
+<script>
+(function () {
+  var stateLabels = {{ ws_states|safe }};
+  var stateCounts = {{ ws_count|safe }};
+  var typeLabels  = {{ ws_type|safe }};
+  var typeCounts  = {{ ws_type_count|safe }};
+  var chartInst;
+
+  function showChart(labels, data, title) {
+    var ctx = document.getElementById('statsChart').getContext('2d');
+    if (chartInst) chartInst.destroy();
+    chartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          label: title,
+          backgroundColor: 'rgba(26,86,219,.65)',
+          borderColor: 'rgba(26,86,219,1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }]
+        }
+      }
+    });
+    document.getElementById('chartModalTitle').textContent = title;
+    $('#chartModal').modal('show');
+  }
+
+  document.getElementById('state_graph_btn').addEventListener('click', function () {
+    showChart(stateLabels, stateCounts, 'Workshops by state');
+  });
+  document.getElementById('type_graph_btn').addEventListener('click', function () {
+    showChart(typeLabels, typeCounts, 'Workshops by type');
+  });
+})();
+</script>
+{% endblock %}

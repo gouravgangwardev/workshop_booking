@@ -1,0 +1,76 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Team Statistics — FOSSEE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px;padding-bottom:48px">
+
+  <h1 class="page-heading">Team Statistics</h1>
+  <p class="page-subheading">Workshop counts per team member.</p>
+
+  <div class="row">
+
+    <!-- Team selector -->
+    <div class="col-12 col-md-3" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-header">Teams</div>
+        <nav aria-label="Team selection">
+          <ul class="nav flex-column" style="padding:8px">
+            {% for team in all_teams %}
+            <li class="nav-item">
+              <a href="{% url 'statistics_app:team' team.id %}"
+                 class="nav-link"
+                 style="color:var(--text-primary);font-size:14px;padding:8px 12px;border-radius:var(--radius-sm)">
+                Team {{ forloop.counter }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="col-12 col-md-9">
+      <div class="card">
+        <div class="card-header">Workshop count by member</div>
+        <div class="card-body">
+          <canvas id="teamChart" style="max-height:360px" aria-label="Team workshop count chart" role="img"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% block extra-dependencies %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+{% endblock %}
+
+<script>
+(function () {
+  var ctx = document.getElementById('teamChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ team_labels|safe }},
+      datasets: [{
+        data: {{ ws_count|safe }},
+        label: 'Workshops',
+        backgroundColor: 'rgba(26,86,219,.7)',
+        borderColor: 'rgba(26,86,219,1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }]
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

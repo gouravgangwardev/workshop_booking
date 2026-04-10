@@ -1,0 +1,310 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Workshop Statistics — FOSSEE{% endblock %}
+
+{% block extra-styles %}
+<style>
+.radio-group { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px; }
+.radio-pill input[type="radio"] { display:none; }
+.radio-pill label {
+  display:inline-block;
+  padding:6px 16px;
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  color:var(--text-secondary);
+  transition:all .15s;
+  user-select:none;
+}
+.radio-pill input[type="radio"]:checked + label {
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px;padding-bottom:48px">
+
+  <h1 class="page-heading">My Workshop Statistics</h1>
+  <p class="page-subheading">Monthly counts, overall breakdown, and geographic distribution.</p>
+
+  <!-- Chart type selector -->
+  <div class="radio-group" role="group" aria-label="Select chart type">
+    <div class="radio-pill">
+      <input type="radio" name="chart-type" id="radio-nwpm" value="NWPM">
+      <label for="radio-nwpm">Monthly count</label>
+    </div>
+    <div class="radio-pill">
+      <input type="radio" name="chart-type" id="radio-owc" value="OWC">
+      <label for="radio-owc">Overall breakdown</label>
+    </div>
+    <div class="radio-pill">
+      <input type="radio" name="chart-type" id="radio-map" value="MAP">
+      <label for="radio-map">India map</label>
+    </div>
+  </div>
+
+  {% if show_workshop_stats %}
+
+  <!-- Date range download/view form -->
+  <div class="card" style="margin-bottom:24px;max-width:480px">
+    <div class="card-body" style="padding:16px">
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        <div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px">
+          <div style="flex:1;min-width:120px">
+            <label for="from" class="form-label">From</label>
+            <input type="date" id="from" name="from" class="form-control">
+          </div>
+          <div style="flex:1;min-width:120px">
+            <label for="to" class="form-label">To</label>
+            <input type="date" id="to" name="to" class="form-control">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button type="submit" name="Download" value="Download"
+                    class="btn btn-secondary btn-sm"
+                    data-loading-text="Downloading…">
+              <i class="fa fa-download" aria-hidden="true"></i>&nbsp;Download
+            </button>
+            <button type="submit" name="View" value="View"
+                    class="btn btn-primary btn-sm"
+                    data-loading-text="Loading…">
+              <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Upcoming workshops table -->
+  <div class="section-title">Upcoming workshops</div>
+
+  <div class="table-wrapper d-none d-md-block" style="margin-bottom:24px">
+    <table class="table table-hover" aria-label="Upcoming workshops">
+      <thead>
+        <tr>
+          <th scope="col">Coordinator</th>
+          <th scope="col">Institute</th>
+          <th scope="col">Instructor</th>
+          <th scope="col">Workshop</th>
+          <th scope="col">Date</th>
+          <th scope="col">Proposed by</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for workshop in upcoming_workshops %}
+        <tr>
+          {% if workshop.proposed_workshop_date %}
+          <td>{{ workshop.proposed_workshop_coordinator.get_full_name|capfirst }}</td>
+          <td>{{ workshop.proposed_workshop_coordinator.profile.institute|capfirst }}</td>
+          <td>{{ workshop.proposed_workshop_instructor.get_full_name }}</td>
+          <td>{{ workshop.proposed_workshop_title.workshoptype_name }}</td>
+          <td>{{ workshop.proposed_workshop_date|date:"d M Y" }}</td>
+          <td><span class="badge badge-info">Coordinator</span></td>
+          {% else %}
+          <td>{{ workshop.requested_workshop_coordinator.get_full_name|capfirst }}</td>
+          <td>{{ workshop.requested_workshop_coordinator.profile.institute|capfirst }}</td>
+          <td>{{ workshop.requested_workshop_instructor.get_full_name }}</td>
+          <td>{{ workshop.requested_workshop_title.workshoptype_name }}</td>
+          <td>{{ workshop.requested_workshop_date|date:"d M Y" }}</td>
+          <td><span class="badge badge-info">Instructor</span></td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">
+            No upcoming workshops found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile cards for upcoming -->
+  <div class="d-md-none" style="margin-bottom:24px">
+    {% for workshop in upcoming_workshops %}
+    <div class="status-card">
+      {% if workshop.proposed_workshop_date %}
+      <div class="status-card-title">{{ workshop.proposed_workshop_title.workshoptype_name }}</div>
+      <div class="status-card-sub">{{ workshop.proposed_workshop_coordinator.get_full_name|capfirst }}</div>
+      <div class="status-card-meta">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        {{ workshop.proposed_workshop_date|date:"d M Y" }}
+      </div>
+      {% else %}
+      <div class="status-card-title">{{ workshop.requested_workshop_title.workshoptype_name }}</div>
+      <div class="status-card-sub">{{ workshop.requested_workshop_coordinator.get_full_name|capfirst }}</div>
+      <div class="status-card-meta">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+        {{ workshop.requested_workshop_date|date:"d M Y" }}
+      </div>
+      {% endif %}
+    </div>
+    {% empty %}
+    <p style="color:var(--text-muted);font-size:14px;text-align:center;padding:20px 0">No upcoming workshops.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if upcoming_workshops.has_other_pages %}
+  <nav aria-label="Upcoming workshops pages">
+    <ul class="pagination justify-content-center">
+      {% if upcoming_workshops.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ upcoming_workshops.previous_page_number }}">Previous</a>
+      </li>
+      {% endif %}
+      <li class="page-item disabled">
+        <span class="page-link">
+          Page {{ upcoming_workshops.number }} of {{ upcoming_workshops.paginator.num_pages }}
+        </span>
+      </li>
+      {% if upcoming_workshops.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ upcoming_workshops.next_page_number }}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  {% else %}
+  <div class="alert alert-warning" role="alert">
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    Upcoming workshops view is disabled. Set <code>SHOW_WORKSHOP_STATS = True</code> in settings.py to enable it.
+  </div>
+  {% endif %}
+
+  <!-- Charts canvas (hidden until radio selected) -->
+  <div id="chart-container" style="display:none;margin-top:32px">
+    <div class="card">
+      <div class="card-header" id="chart-title">Chart</div>
+      <div class="card-body">
+        <canvas id="mainChart" style="max-height:400px"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map container -->
+  <div id="map-container" style="display:none;margin-top:32px">
+    <div class="card">
+      <div class="card-header">State-wise workshops — India</div>
+      <div class="card-body">
+        <div id="visualization" style="width:100%;height:400px"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% block extra-dependencies %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+{% endblock %}
+
+<script>
+(function () {
+  var chartInst;
+  var workshopCount  = {{ workshop_count|safe }};
+  var workshopTypes  = {{ workshoptype_count.0|safe }};
+  var workshopTCounts= {{ workshoptype_count.1|safe }};
+  var indiaMap       = {{ india_map|safe }};
+  var today          = new Date();
+
+  /* Set date input max */
+  var fromInput = document.getElementById('from');
+  var toInput   = document.getElementById('to');
+  if (fromInput) {
+    var iso = today.toISOString().split('T')[0];
+    fromInput.max = iso;
+    toInput.max   = iso;
+    fromInput.addEventListener('change', function() { toInput.min = this.value; });
+    toInput.addEventListener('change',   function() { fromInput.max = this.value; });
+  }
+
+  function showChart(type) {
+    var container = document.getElementById('chart-container');
+    var mapCont   = document.getElementById('map-container');
+    var titleEl   = document.getElementById('chart-title');
+    mapCont.style.display = 'none';
+
+    var ctx = document.getElementById('mainChart').getContext('2d');
+    if (chartInst) chartInst.destroy();
+
+    if (type === 'NWPM') {
+      container.style.display = 'block';
+      titleEl.textContent = 'Monthly workshops — ' + today.getFullYear();
+      chartInst = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+          datasets: [{
+            label: 'Workshops',
+            data: workshopCount,
+            backgroundColor: 'rgba(26,86,219,.65)',
+            borderColor: 'rgba(26,86,219,1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { yAxes: [{ ticks: { beginAtZero: true, precision: 0 } }] }
+        }
+      });
+    } else if (type === 'OWC') {
+      container.style.display = 'block';
+      titleEl.textContent = 'Workshops by type';
+      chartInst = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: workshopTypes,
+          datasets: [{
+            data: workshopTCounts,
+            backgroundColor: [
+              'rgba(26,86,219,.8)',
+              'rgba(22,163,74,.8)',
+              'rgba(217,119,6,.8)',
+              'rgba(220,38,38,.8)',
+              'rgba(99,102,241,.8)'
+            ]
+          }]
+        },
+        options: { responsive: true }
+      });
+    } else if (type === 'MAP') {
+      container.style.display = 'none';
+      mapCont.style.display   = 'block';
+      if (typeof google !== 'undefined') {
+        google.load('visualization', '1.0', {
+          packages: ['geochart'],
+          callback: function () {
+            var data = google.visualization.arrayToDataTable(indiaMap);
+            var opts = {
+              region: 'IN', domain: 'IN',
+              displayMode: 'regions', resolution: 'provinces',
+              datalessRegionColor: '#f3f4f6',
+              colorAxis: { colors: ['#bfdbfe','#1a56db'] }
+            };
+            new google.visualization.GeoChart(
+              document.getElementById('visualization')
+            ).draw(data, opts);
+          }
+        });
+      }
+    }
+  }
+
+  document.querySelectorAll('input[name="chart-type"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      showChart(this.value);
+    });
+  });
+})();
+</script>
+{% endblock %}

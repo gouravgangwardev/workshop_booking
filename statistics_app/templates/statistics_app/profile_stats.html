@@ -1,0 +1,185 @@
+{% extends 'workshop_app/base.html' %}
+
+{% block title %}Profile Statistics — FOSSEE{% endblock %}
+
+{% block extra-styles %}
+<style>
+.radio-group { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px; }
+.radio-pill input[type="radio"] { display:none; }
+.radio-pill label {
+  display:inline-block;
+  padding:6px 18px;
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  color:var(--text-secondary);
+  transition:all .15s;
+  user-select:none;
+}
+.radio-pill input[type="radio"]:checked + label {
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container" style="padding-top:24px;padding-bottom:48px">
+
+  <h1 class="page-heading">Profile Statistics</h1>
+  <p class="page-subheading">View instructor or coordinator activity.</p>
+
+  <!-- Toggle -->
+  <div class="radio-group" role="group" aria-label="Select profile type">
+    <div class="radio-pill">
+      <input type="radio" name="profile-type" id="radio-ip" value="IP">
+      <label for="radio-ip">Instructors</label>
+    </div>
+    <div class="radio-pill">
+      <input type="radio" name="profile-type" id="radio-cp" value="CP">
+      <label for="radio-cp">Coordinators</label>
+    </div>
+  </div>
+
+  <!-- Instructor Table -->
+  <div id="instructor_data" style="display:none">
+    <div class="section-title">Instructor activity</div>
+
+    <!-- Desktop -->
+    <div class="table-wrapper d-none d-md-block">
+      <table class="table table-hover" aria-label="Instructor statistics">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Full name</th>
+            <th scope="col">Institute</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Workshops</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profile_data in instructor_data %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ profile_data.profile.user }}</td>
+            <td>{{ profile_data.profile.user.first_name }} {{ profile_data.profile.user.last_name }}</td>
+            <td>{{ profile_data.profile.institute }}</td>
+            <td>{{ profile_data.profile.phone_number }}</td>
+            <td><strong>{{ profile_data.count }}</strong></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">
+              No instructors found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="d-md-none">
+      {% for profile_data in instructor_data %}
+      <div class="status-card">
+        <div class="status-card-title">
+          {{ profile_data.profile.user.first_name }} {{ profile_data.profile.user.last_name }}
+        </div>
+        <div class="status-card-sub">{{ profile_data.profile.institute }}</div>
+        <div class="status-card-meta">
+          <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+          {{ profile_data.count }} workshop{{ profile_data.count|pluralize }}
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--text-muted);font-size:14px;text-align:center;padding:20px 0">No instructors found.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Coordinator Table -->
+  <div id="coordinator_data" style="display:none">
+    <div class="section-title">Coordinator activity</div>
+
+    <!-- Desktop -->
+    <div class="table-wrapper d-none d-md-block">
+      <table class="table table-hover" aria-label="Coordinator statistics">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Institute</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Registered</th>
+            <th scope="col">Workshops</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profile_data in coordinator_data %}
+            {% if profile_data.count > 0 %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>
+                <a href="/view_comment_profile/{{ profile_data.profile.user.id }}">
+                  {{ profile_data.profile.user.get_full_name }}
+                </a>
+              </td>
+              <td>{{ profile_data.profile.institute }}</td>
+              <td>{{ profile_data.profile.phone_number }}</td>
+              <td>{{ profile_data.profile.user.date_joined|date:"d M Y" }}</td>
+              <td><strong>{{ profile_data.count }}</strong></td>
+            </tr>
+            {% endif %}
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">
+              No coordinator data found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="d-md-none">
+      {% for profile_data in coordinator_data %}
+        {% if profile_data.count > 0 %}
+        <div class="status-card">
+          <div class="status-card-title">{{ profile_data.profile.user.get_full_name }}</div>
+          <div class="status-card-sub">{{ profile_data.profile.institute }}</div>
+          <div class="status-card-meta">
+            <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+            {{ profile_data.count }} workshop{{ profile_data.count|pluralize }}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var instrEl = document.getElementById('instructor_data');
+  var coordEl = document.getElementById('coordinator_data');
+
+  document.querySelectorAll('input[name="profile-type"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      if (this.value === 'IP') {
+        instrEl.style.display = 'block';
+        coordEl.style.display = 'none';
+      } else {
+        instrEl.style.display = 'none';
+        coordEl.style.display = 'block';
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}
