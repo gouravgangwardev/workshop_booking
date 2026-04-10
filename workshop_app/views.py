@@ -4,11 +4,6 @@ from django.forms import inlineformset_factory, model_to_dict
 from django.http import JsonResponse, Http404
 from django.urls import reverse
 
-try:
-    from StringIO import StringIO as string_io
-except ImportError:
-    from io import BytesIO as string_io
-
 from datetime import datetime, date, timedelta
 import os
 
