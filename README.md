@@ -333,133 +333,192 @@ The template had two nested `<form action="" method="post">` tags with two `{% c
 
 ---
 
-## Screenshots to Include in README
-
-Capture at 375px (iPhone SE) and 1280px (desktop) for each:
-
-| # | Screen | What it shows |
-|---|---|---|
-| 1 | Login page (mobile, before/after) | Centered card, prominent CTAs, proper input styling |
-| 2 | Registration form (mobile, before/after) | `form.as_table` raw → sectioned form with labels |
-| 3 | Workshop types list (desktop, before/after) | Plain table → card grid with hover |
-| 4 | Workshop status (mobile, before/after) | 6-column overflow table → stacked cards |
-| 5 | Propose workshop form (mobile, before/after) | jQuery UI datepicker → native date input |
-| 6 | Empty state (before/after) | Bootstrap jumbotron → empty-state with CTA |
-
-Use Chrome DevTools Device Toolbar (Ctrl+Shift+M), set to "iPhone SE" (375×667) for mobile captures.
-
 ## Screenshots
 
-Capture at 375px (iPhone SE) and 1280px (desktop) for each.
+All screenshots captured at:
+- Mobile: 375px (iPhone SE)
+- Desktop: 1280px
 
 ---
 
-## After
+## After Improvements
 
 ### 1. Login
-**Desktop**
-![Login Desktop](https://github.com/user-attachments/assets/4f108651-a775-4644-8b6d-fa39133a6e16)
 
-**Mobile**
-![Login Mobile](https://github.com/user-attachments/assets/b8fbaac4-2ec3-45a6-a539-c23d83797155)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/4f108651-a775-4644-8b6d-fa39133a6e16" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/b8fbaac4-2ec3-45a6-a539-c23d83797155" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 2. Registration
-**Desktop**
-![Registration Desktop](https://github.com/user-attachments/assets/471f369c-3a05-4afe-b9dc-9094fb9c899c)
 
-**Mobile**
-![Registration Mobile](https://github.com/user-attachments/assets/c9f8b72d-1464-4311-af9b-1f0ed606e305)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/471f369c-3a05-4afe-b9dc-9094fb9c899c" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/c9f8b72d-1464-4311-af9b-1f0ed606e305" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 3. Workshop Types
-**Desktop**
-![Workshop Types Desktop](https://github.com/user-attachments/assets/61f88eb0-24c6-4ec5-94b0-05cbd377f5b4)
 
-**Mobile**
-![Workshop Types Mobile](https://github.com/user-attachments/assets/58d48c1e-4ed3-4fba-9831-9df2f81f5471)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/61f88eb0-24c6-4ec5-94b0-05cbd377f5b4" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/58d48c1e-4ed3-4fba-9831-9df2f81f5471" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 4. Workshop Status
-**Desktop**
-![Workshop Status Desktop](https://github.com/user-attachments/assets/bb580ca9-5f93-48fa-841e-fc5139d097fc)
 
-**Mobile**
-![Workshop Status Mobile](https://github.com/user-attachments/assets/c14a869d-799b-4b15-8108-96087d7541ed)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/bb580ca9-5f93-48fa-841e-fc5139d097fc" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/c14a869d-799b-4b15-8108-96087d7541ed" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 5. Propose Workshop
-**Desktop**
-![Propose Workshop Desktop](https://github.com/user-attachments/assets/a6c778ff-03f7-4a72-800f-758ab591dfe2)
 
-**Mobile**
-![Propose Workshop Mobile](https://github.com/user-attachments/assets/acb1b1c8-7a1c-45a0-be18-1fdafb03dba5)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/a6c778ff-03f7-4a72-800f-758ab591dfe2" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/acb1b1c8-7a1c-45a0-be18-1fdafb03dba5" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 6. Empty State
-**Desktop**
-![Empty State Desktop](https://github.com/user-attachments/assets/eec7cf4b-4ff0-4521-9102-5fc42279bee8)
 
-**Mobile**
-![Empty State Mobile](https://github.com/user-attachments/assets/491c98a6-ffff-45a4-82c8-f591195ee2e1)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/eec7cf4b-4ff0-4521-9102-5fc42279bee8" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/491c98a6-ffff-45a4-82c8-f591195ee2e1" width="300"/></td>
+</tr>
+</table>
 
 ---
 
-## Before
+## Before Improvements
 
 ### 1. Login
-**Desktop**
-![Login Before Desktop](https://github.com/user-attachments/assets/523d9f27-e9b3-44a5-8e40-052c4f3b0ec5)
 
-**Mobile**
-![Login Before Mobile](https://github.com/user-attachments/assets/8fd517ae-e089-4a55-a603-3911eae6762e)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/523d9f27-e9b3-44a5-8e40-052c4f3b0ec5" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/8fd517ae-e089-4a55-a603-3911eae6762e" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 2. Registration
-**Desktop**
-![Registration Before Desktop](https://github.com/user-attachments/assets/afe9a9fc-3a1e-4b44-9247-915f89d06a4d)
 
-**Mobile**
-![Registration Before Mobile](https://github.com/user-attachments/assets/4badb3f9-7fbc-4465-8a7c-d198fda821a8)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/afe9a9fc-3a1e-4b44-9247-915f89d06a4d" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/4badb3f9-7fbc-4465-8a7c-d198fda821a8" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 3. Workshop Types
-**Desktop**
-![Workshop Types Before Desktop](https://github.com/user-attachments/assets/373e8f59-ad94-40b0-99b5-65b0afd8c106)
 
-**Mobile**
-![Workshop Types Before Mobile](https://github.com/user-attachments/assets/f041db49-a807-474d-8aba-58d726b059c0)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/373e8f59-ad94-40b0-99b5-65b0afd8c106" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/f041db49-a807-474d-8aba-58d726b059c0" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 4. Workshop Status
-**Desktop**
-![Workshop Status Before Desktop](https://github.com/user-attachments/assets/88b04f27-940c-41b0-9c06-0eb8c3c7506c)
 
-**Mobile**
-![Workshop Status Before Mobile](https://github.com/user-attachments/assets/4e543e9a-2943-4b24-932f-e07bb3450f49)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/88b04f27-940c-41b0-9c06-0eb8c3c7506c" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/4e543e9a-2943-4b24-932f-e07bb3450f49" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 5. Propose Workshop
-**Desktop**
-![Propose Workshop Before Desktop](https://github.com/user-attachments/assets/18ba2f2b-af6d-40ed-8955-bddecf5a1398)
 
-**Mobile**
-![Propose Workshop Before Mobile](https://github.com/user-attachments/assets/86727af9-7f2c-4d7d-bf19-1e541a85af60)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/18ba2f2b-af6d-40ed-8955-bddecf5a1398" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/86727af9-7f2c-4d7d-bf19-1e541a85af60" width="300"/></td>
+</tr>
+</table>
 
 ---
 
 ### 6. Empty State
-**Desktop**
-![Empty State Before Desktop](https://github.com/user-attachments/assets/317b6d2c-893b-4485-b849-d4c11760fab6)
 
-**Mobile**
-![Empty State Before Mobile](https://github.com/user-attachments/assets/9263f178-246c-4494-876b-29ecd7d8c607)
+<table>
+<tr>
+<td><b>Desktop</b></td>
+<td><b>Mobile</b></td>
+</tr>
+<tr>
+<td><img src="https://github.com/user-attachments/assets/317b6d2c-893b-4485-b849-d4c11760fab6" width="100%"/></td>
+<td><img src="https://github.com/user-attachments/assets/9263f178-246c-4494-876b-29ecd7d8c607" width="300"/></td>
+</tr>
+</table>
