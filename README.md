@@ -347,3 +347,18 @@ Capture at 375px (iPhone SE) and 1280px (desktop) for each:
 | 6 | Empty state (before/after) | Bootstrap jumbotron → empty-state with CTA |
 
 Use Chrome DevTools Device Toolbar (Ctrl+Shift+M), set to "iPhone SE" (375×667) for mobile captures.
+
+## After
+# 1. Login 
+# Desktop
+<img width="1152" height="788" alt="image" src="https://github.com/user-attachments/assets/4f108651-a775-4644-8b6d-fa39133a6e16" />
+# Mobile
+<img width="739" height="1026" alt="image" src="https://github.com/user-attachments/assets/b8fbaac4-2ec3-45a6-a539-c23d83797155" />
+# 2. Registration desktop
+# 3. Workshop types desktop
+# 4. Workshop status desktop
+# 5. Propose workshop desktop
+# 6. Empty state desktop
+# 7. 
+
+
